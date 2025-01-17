@@ -1,6 +1,8 @@
 package shop.javaman.club.config;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import shop.javaman.club.security.filter.ApiCheckFilter;
 import shop.javaman.club.security.filter.ApiLoginFilter;
@@ -62,17 +67,36 @@ public class SecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
+
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration config = new CorsConfiguration();
+
+    config.setAllowCredentials(true);
+    config.setAllowedOrigins(List.of("http://localhost:3000"));
+    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+    config.setAllowedHeaders(List.of("*"));
+    config.setExposedHeaders(List.of("*"));
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+    return source;
+  }
+
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (필요에 따라 활성화)
         .authorizeHttpRequests(auth -> auth
           .requestMatchers("/sample/all").permitAll()
+          .requestMatchers("/swagger-ui.html").permitAll()
           .requestMatchers("/sample/member").hasRole("USER")
-          .anyRequest().authenticated()
+          // .anyRequest().authenticated()
+          .anyRequest().permitAll()
         )
         .userDetailsService(userDetailsService)
-        // .oauth2Login(o -> o.successHandler(loginSuccessHandler()))
+        .oauth2Login(o -> o.successHandler(loginSuccessHandler()))
+        .cors(c -> c.configurationSource(corsConfigurationSource()))
         ;
         // .rememberMe(r -> r.tokenValiditySeconds(60 * 60 * 24 * 14).userDetailsService(userDetailsService)
         //   .rememberMeCookieName("remember-id"));

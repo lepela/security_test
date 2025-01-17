@@ -39,6 +39,7 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter{
     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, pw);
     Authentication authentication = getAuthenticationManager().authenticate(authenticationToken);
     SecurityContextHolder.getContext().setAuthentication(authentication);
+    log.info("적용된 principal확인 :: " + SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     log.info(authentication.getPrincipal()); 
     return authentication;
   }
@@ -56,6 +57,8 @@ public class ApiLoginFilter extends AbstractAuthenticationProcessingFilter{
       String token = jwtUtil.generateToken(email);
       response.setContentType("text/plain");
       response.getOutputStream().write(token.getBytes());
+      response.getOutputStream().flush();
+      response.getOutputStream().close();
       log.info("===================== api login success =====================");
       log.info("token info :: " + token);
     } catch (Exception e) {

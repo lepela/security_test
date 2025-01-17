@@ -38,4 +38,5 @@ out/
 
 ### private information ###
 application-oauth.yml
+application-s3.yml
 

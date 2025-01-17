@@ -1,7 +1,12 @@
 spring:
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 10MB
   profiles:
     include:
     - oauth
+    - s3
   application:
     name: club
   datasource:
@@ -47,4 +52,3 @@ spring:
       password: $2a$10$ZoY0NyBPXhblfzY210wrJePCBfGZH/baDYJNnA1MZN9GjwwGcbJki #1234
       roles:
       - USER
-      

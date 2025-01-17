@@ -13,7 +13,6 @@ import lombok.extern.log4j.Log4j2;
 import shop.javaman.club.security.dto.AuthMemberDto;
 
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -29,7 +28,8 @@ public class SampleController {
   
 
   @GetMapping("all")
-  public void exAll(@AuthenticationPrincipal AuthMemberDto dto) {
+  public void exAll(@AuthenticationPrincipal AuthMemberDto dto, @AuthenticationPrincipal String email) {
+    log.info(email);
     log.info(dto);
     log.info("ex all");
   }

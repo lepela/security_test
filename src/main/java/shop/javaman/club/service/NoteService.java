@@ -1,28 +1,45 @@
 package shop.javaman.club.service;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
-
+import shop.javaman.club.entity.Attach;
 import shop.javaman.club.entity.Member;
 import shop.javaman.club.entity.Note;
+import shop.javaman.club.entity.dto.AttachDto;
 import shop.javaman.club.entity.dto.NoteDto;
 
 public interface NoteService {
 
   Long write(NoteDto dto);
-  NoteDto get(Long num);
+  Optional<NoteDto> get(Long num);
   List<NoteDto> list(String email);
+  List<NoteDto> listAll();
   int modify(NoteDto dto);
   int remove(Long num);
 
   default Note toEntity(NoteDto dto) {
-    return Note.builder()
+    Note note = Note.builder()
     .num(dto.getNum())
     .title(dto.getTitle())
     .content(dto.getContent())
     .member(Member.builder().email(dto.getWriter()).mno(dto.getMno()).build())
     .build();
+
+    note.setAttachs(dto.getAttachDtos().stream().map(a -> Attach.builder()
+      .uuid(a.getUuid())
+      .origin(a.getOrigin())
+      .ext(a.getExt())
+      .fileName(a.getFileName())
+      .image(a.isImage())
+      .mime(a.getMime())
+      .path(a.getPath())
+      .size(a.getSize())
+      .url(a.getUrl())
+      .note(note)
+      .build()).toList()
+    );
+    return note;
   }
 
   default NoteDto toDto(Note note) {
@@ -34,6 +51,18 @@ public interface NoteService {
     .mno(note.getMember().getMno())
     .regDate(note.getRegDate())
     .modDate(note.getModDate())
-    .build();
+    .attachDtos(note.getAttachs().stream().map(a -> AttachDto.builder()
+      .ext(a.getExt())
+      .fileName(a.getFileName())
+      .image(a.isImage())
+      .mime(a.getMime())
+      .num(a.getNote().getNum())
+      .origin(a.getOrigin())
+      .path(a.getPath())
+      .size(a.getSize())
+      .url(a.getUrl())
+      .uuid(a.getUuid())
+      .build()).toList()
+    ).build();
   }
 }

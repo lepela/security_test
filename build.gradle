@@ -67,6 +67,18 @@ dependencies {
 	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
 	implementation 'io.jsonwebtoken:jjwt:0.12.6'
 
+	// https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-starter-webmvc-ui
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+
+// https://mvnrepository.com/artifact/software.amazon.awssdk/core
+	implementation 'software.amazon.awssdk:core:2.29.51'
+
+	// implementation 'software.amazon.awssdk:core'
+	implementation 'software.amazon.awssdk:s3:2.29.51'
+	implementation platform('software.amazon.awssdk:bom:2.20.112') // 최신 버전
+	
+
+
 }
 
 tasks.named('test') {

@@ -24,6 +24,8 @@ public class NoteServiceTests {
 
   @Test
   public void testRead() {
-    log.info(service.get(6L));
+    NoteDto dto = service.get(28L).get();
+    dto.getAttachDtos().forEach(log::info);
+    // log.info(service.get(28L));
   }
 }
